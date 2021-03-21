@@ -1,7 +1,8 @@
-# Introduction
+# WebSocket Samples
 
-The Spring Boot Greeting sample split into two Spring Boot applications, a
-client and a server, to test basic connection establishment and performance.
+This sample started with the [Spring Boot WebSocket STOMP messaging sample](https://github.com/spring-guides/gs-messaging-stomp-websocket).
 
+# Issues/Bugs
 
-# Issues
+[Spring #26710](https://github.com/spring-projects/spring-framework/issues/26710) - fast client disconnect corrupts server
+
