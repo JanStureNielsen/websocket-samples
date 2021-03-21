@@ -24,9 +24,9 @@
     <description></description>
 
     <scm>
-        <connection>scm:git:git@github.com:JanStureNielsen/flexemarkets.git</connection>
-        <developerConnection>scm:git:git@github.com:JanStureNielsen/flexemarkets.git</developerConnection>
-        <url>https://github.com/JanStureNielsen/flexemarkets</url>
+        <connection>scm:git:git@github.com:JanStureNielsen/websocket-samples.git</connection>
+        <developerConnection>scm:git:git@github.com:JanStureNielsen/websocket-samples.git</developerConnection>
+        <url>https://github.com/JanStureNielsen/websocket-samples</url>
         <tag>HEAD</tag>
     </scm>
 
