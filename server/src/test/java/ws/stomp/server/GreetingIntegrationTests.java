@@ -87,8 +87,8 @@ public class GreetingIntegrationTests {
 				}
 			}
 		};
-
-		this.stompClient.connect("ws://localhost:{port}/gs-guide-websocket", this.headers, handler, this.port);
+		
+		this.stompClient.connect("ws://localhost:{port}/echo", this.headers, handler, this.port);
 
 		if (latch.await(3, TimeUnit.SECONDS)) {
 			if (failure.get() != null) {
