@@ -26,19 +26,19 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
-	private static final String USAGE = "ws-ping <host-url> <packets> <packets-per-second>";
+    private static final String USAGE = "ws-ping <host-url> <packets> <packets-per-second>";
 
-	private String hostUrl;
-	private int packets;
-	private int packetsPerSecond;
+    private String hostUrl;
+    private int packets;
+    private int packetsPerSecond;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     private static void usage(String usage) {
-    	System.out.println("USAGE: " + usage);
-    	System.exit(1);
+        System.out.println("USAGE: " + usage);
+        System.exit(1);
     }
 
     private SockJsClient sockJsClient;
@@ -49,15 +49,15 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-    	if (3 != args.length) {
-    		usage(USAGE);
-    	}
+        if (3 != args.length) {
+            usage(USAGE);
+        }
 
-    	hostUrl = args[0];
-    	packets = Integer.parseInt(args[1]);
-    	packetsPerSecond = Integer.parseInt(args[2]);
+        hostUrl = args[0];
+        packets = Integer.parseInt(args[1]);
+        packetsPerSecond = Integer.parseInt(args[2]);
 
-    	List<Transport> transports = new ArrayList<>();
+        List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         sockJsClient = new SockJsClient(transports);
 
@@ -85,12 +85,12 @@ public class Application implements CommandLineRunner {
                         } catch (Throwable t) {
                             failure.set(t);
                         } finally {
-                        	try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                             session.disconnect();
                             latch.countDown();
                         }
