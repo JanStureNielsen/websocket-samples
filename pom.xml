@@ -31,8 +31,8 @@
     </scm>
 
     <modules>
-        <module>server</module>
-        <module>client</module>
+        <module>stomp-sockjs-server</module>
+        <module>stomp-sockjs-client</module>
     </modules>
 
     <dependencyManagement>
