@@ -26,7 +26,20 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
-    private final int port = 8901;
+	private static final String USAGE = "ws-ping <host-url> <packets> <packets-per-second>";
+
+	private String hostUrl;
+	private int packets;
+	private int packetsPerSecond;
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    private static void usage(String usage) {
+    	System.out.println("USAGE: " + usage);
+    	System.exit(1);
+    }
 
     private SockJsClient sockJsClient;
 
@@ -34,13 +47,17 @@ public class Application implements CommandLineRunner {
 
     private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
 
-    public static void main(String[] args) throws InterruptedException, AssertionError {
-        SpringApplication.run(Application.class, args);
-    }
-
     @Override
     public void run(String... args) throws Exception {
-        List<Transport> transports = new ArrayList<>();
+    	if (3 != args.length) {
+    		usage(USAGE);
+    	}
+
+    	hostUrl = args[0];
+    	packets = Integer.parseInt(args[1]);
+    	packetsPerSecond = Integer.parseInt(args[2]);
+
+    	List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         sockJsClient = new SockJsClient(transports);
 
@@ -54,27 +71,33 @@ public class Application implements CommandLineRunner {
 
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/topic/greetings", new StompFrameHandler() {
+                session.subscribe("/topic/ping", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
-                        return Greeting.class;
+                        return Long.class;
                     }
 
                     @Override
                     public void handleFrame(StompHeaders headers, Object payload) {
-                        Greeting greeting = (Greeting) payload;
+                        long ping = ((Long) payload).longValue();
                         try {
-                            System.out.println("Greeting: " + greeting.getContent());
+                            System.out.println("Ping got:" + ping);
                         } catch (Throwable t) {
                             failure.set(t);
                         } finally {
+                        	try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
                             session.disconnect();
                             latch.countDown();
                         }
                     }
                 });
                 try {
-                    session.send("/app/hello", new HelloMessage("Spring"));
+                    session.send("/app/ping", 1234);
                 } catch (Throwable t) {
                     failure.set(t);
                     latch.countDown();
@@ -82,7 +105,7 @@ public class Application implements CommandLineRunner {
             }
         };
 
-        stompClient.connect("ws://localhost:{port}/echo", headers, handler, port);
+        stompClient.connect(hostUrl, headers, handler);
 
         if (latch.await(3, TimeUnit.MINUTES/*.SECONDS*/)) {
             if (failure.get() != null) {

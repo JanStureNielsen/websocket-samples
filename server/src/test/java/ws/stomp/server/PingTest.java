@@ -29,7 +29,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GreetingIntegrationTests {
+public class PingTest {
 
     @LocalServerPort
     private int port;
@@ -60,17 +60,17 @@ public class GreetingIntegrationTests {
 
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/topic/greetings", new StompFrameHandler() {
+                session.subscribe("/topic/ping", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
-                        return Greeting.class;
+                        return Long.class;
                     }
 
                     @Override
                     public void handleFrame(StompHeaders headers, Object payload) {
-                        Greeting greeting = (Greeting) payload;
+                        long ping = ((Long) payload).longValue();
                         try {
-                            assertEquals("Hello, Spring!", greeting.getContent());
+                            assertEquals(12345, ping);
                         } catch (Throwable t) {
                             failure.set(t);
                         } finally {
@@ -80,7 +80,7 @@ public class GreetingIntegrationTests {
                     }
                 });
                 try {
-                    session.send("/app/hello", new HelloMessage("Spring"));
+                    session.send("/app/ping", 12345);
                 } catch (Throwable t) {
                     failure.set(t);
                     latch.countDown();
